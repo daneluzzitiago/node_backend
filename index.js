@@ -1,6 +1,7 @@
 const express = require("express");
 const firebaseAdmin = require('firebase-admin');
 const firestoreCredential = require('./gymbo-firebase-adminsdk-skfo3-76710d743a.json');
+require('dotenv').config();
 
 firebaseAdmin.initializeApp({ credential: firebaseAdmin.credential.cert(firestoreCredential)});
 
