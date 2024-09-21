@@ -1,41 +1,18 @@
-const db = require('../../index');
+const db = require('../db');
+const emailConfig = require('../config');
 const nodemailer = require('nodemailer');
+const userRepository = require('../repositories/userRepository');
 
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: "contatogymbo@gmail.com",
-        pass: process.env.GOOGLE_APP_PASSWORD
-    }
-})
+const transporter = nodemailer.createTransport(emailConfig);
 
-const requiredFields = ['name', 'admin', 'phone'];
+const requiredFields = ['name', 'admin', 'phone', 'email'];
 
 exports.getAllUsers = async () => {
-    const snapshot = await db.collection('node_backend_data').get();
-    const response = [];
-    snapshot.forEach((doc) => response.push(doc.data()));
-    return response;
+    return userRepository.getAllUsers();
 }
 
 exports.findUser = async (email) => {
-    try {
-        const docRef = db.collection('node_backend_data');
-        const snapshot = await docRef.where("email", "==", email).get();
-        if (snapshot.empty) {
-            throw {
-                status: 404,
-            }
-        }
-        return snapshot.docs[0].data();
-
-    } catch (err) {
-        console.log("Error: ", err);
-    }
-
+    return userRepository.getUserByEmail(email);
 }
 
 exports.addNewUser = async (userData) => {
@@ -52,8 +29,14 @@ exports.addNewUser = async (userData) => {
             missingFields: missingFields,
         }
     }
-    const docRef = await db.collection('node_backend_data').add(userData);
-    return docRef.id;
+
+    try {
+        const newUser = await userRepository.createUser(userData);
+        return newUser;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 exports.login = async (email) => {

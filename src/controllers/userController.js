@@ -25,8 +25,8 @@ exports.addUser = async (req, res) => {
         const docId = await userService.addNewUser(req.body);
         return res.status(200).json({ docId: docId });
     } catch (err) {
-        console.log(err.status);
-        return res.status(err.status).json({ message: err.message, fields: err.missingFields });
+        console.log(err);
+        return res.status(err.status || 500).json({ message: err.message, fields: err.missingFields });
     }
 };
 
