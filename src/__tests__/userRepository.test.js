@@ -1,5 +1,5 @@
-const { getUserByEmail, getAllUsers, createUser } = require('../repositories/userRepository');
-const db = require('../db');
+import { getUserByEmail, getAllUsers, createUser } from '../repositories/userRepository';
+import { collection } from '../db';
 
 jest.mock('../db');
 
@@ -19,7 +19,7 @@ describe('User Repository', () => {
         }),
       };
 
-      db.collection.mockReturnValue({
+      collection.mockReturnValue({
         where: jest.fn().mockReturnValue({
           get: jest.fn().mockResolvedValue([mock]),
         }),
@@ -30,7 +30,7 @@ describe('User Repository', () => {
     });
 
     test('should return empty array if user doesnt exists', async () => {
-      db.collection.mockReturnValue({
+      collection.mockReturnValue({
         where: jest.fn().mockReturnValue({
           get: jest.fn().mockResolvedValue([]),
         }),

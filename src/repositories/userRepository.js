@@ -1,8 +1,8 @@
-const db = require('../db');
+import { collection } from '../db';
 
-const docRef = () => db.collection('node_backend_data');
+const docRef = () => collection('node_backend_data');
 
-exports.getUserByEmail = async (email) => {
+export async function getUserByEmail(email) {
   try {
     const user = await docRef().where("email", "==", email).get();
     return user;
@@ -12,7 +12,7 @@ exports.getUserByEmail = async (email) => {
 
 }
 
-exports.getAllUsers = async () => {
+export async function getAllUsers() {
   try {
     const response = [];
     const snapshotData = await docRef().get();
@@ -23,7 +23,7 @@ exports.getAllUsers = async () => {
   }
 }
 
-exports.createUser = async (data) => {
+export async function createUser(data) {
   const email = data.email;
   const user = await this.getUserByEmail(email);
   if (user) {
@@ -40,6 +40,6 @@ exports.createUser = async (data) => {
   }
 }
 
-exports.updateUser = async () => { }
+export async function updateUser() { }
 
-exports.deleteUser = async () => { }
+export async function deleteUser() { }
